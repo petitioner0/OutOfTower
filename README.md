@@ -1,1 +1,1 @@
-This is a Slya of Spire Mod
+This is a Slay of Spire Mod
