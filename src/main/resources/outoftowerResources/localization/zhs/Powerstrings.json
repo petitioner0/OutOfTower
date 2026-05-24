@@ -1,0 +1,15 @@
+{
+  "OutOfTower:Hatred": {
+    "NAME": "怨恨",
+    "DESCRIPTIONS": [
+      "受到或造成伤害时，获得 #b1 点。",
+      ""
+    ]
+  },
+  "OutOfTower:Mark": {
+    "NAME": "标记",
+    "DESCRIPTIONS": [
+      "你已被锁定。某些敌人会消耗此效果发动强力攻击。"
+    ]
+  }
+}

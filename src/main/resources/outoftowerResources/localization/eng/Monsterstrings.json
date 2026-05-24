@@ -1,0 +1,68 @@
+{
+  "OutOfTower:WildWraith": {
+    "NAME": "Wild Wraith",
+    "MOVES": [
+      "Hatred Flurry",
+      "Cursed Gale",
+      "Malice Convergence",
+      "Rancor Scream"
+    ],
+    "DIALOG": []
+  },
+
+  "OutOfTower:SandstormWolf": {
+    "NAME": "Sandstorm Wolf"
+  },
+
+  "OutOfTower:RockRhino": {
+    "NAME": "Rock Rhino"
+  },
+
+  "OutOfTower:DemonCorruptedWarrior": {
+    "NAME": "DemonCorrupted Warrior"
+  },
+
+  "OutOfTower:WildRat": {
+    "NAME": "Wild Rat"
+  },
+
+  "OutOfTower:WildWalker": {
+    "NAME": "Wild Walker",
+    "MOVES": [
+      "Shadow Step",
+      "Triple Strike",
+      "Guard",
+      "Eviscerate"
+    ],
+    "DIALOG": []
+  },
+
+  "OutOfTower:WildWarElephant": {
+    "NAME": "Wild War Elephant",
+    "MOVES": [
+      "Battlecry",
+      "Pressure",
+      "Charge"
+    ],
+    "DIALOG": []
+  },
+  
+  "OutOfTower:WildstormHound": {
+    "NAME": "Wildstorm Hound",
+    "MOVES": [
+      "Rend",
+      "Pounce",
+      "Conceal",
+      "Mark Ripper"
+    ]
+  },
+
+  "OutOfTower:WildHunter": {
+    "NAME": "Wild Hunter",
+    "MOVES": [
+      "Double Strike",
+      "Weak Point",
+      "Tactical Mark"
+    ]
+  }
+}

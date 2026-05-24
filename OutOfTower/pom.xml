@@ -3,9 +3,9 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>UnimportantInfo</groupId>
 
-    <artifactId>OutOfTower</artifactId>
+    <artifactId>TheTodo</artifactId>
     <version>0.0.1</version>
-    <name>OutOfTower</name>
+    <name>The Todo</name>
     <description>TODO: Change this description</description>
     <!-- Change the above for mod information. -->
 
@@ -17,7 +17,7 @@
         <ModTheSpire.version>3.18.2</ModTheSpire.version>
 
         <!-- CHANGE THIS TO MATCH YOUR MODID FIELD IN THE MAIN TodoMod CLASS FILE -->
-        <ModID>outoftower</ModID>
+        <ModID>todomod</ModID>
         <!-- CHANGE THIS TO MATCH YOUR MODID FIELD IN THE MAIN TodoMod CLASS FILE -->
 
         <!--CHANGE THIS TO YOUR STEAM INSTALLATION-->

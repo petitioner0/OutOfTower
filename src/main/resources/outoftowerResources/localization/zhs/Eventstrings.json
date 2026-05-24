@@ -1,0 +1,11 @@
+{
+  "OutOfTower:MyFirstEvent": {
+    "NAME": "My First Event",
+    "DESCRIPTIONS": [
+      "This is my very first event."
+    ],
+    "OPTIONS": [
+      "Leave"
+    ]
+  }
+}

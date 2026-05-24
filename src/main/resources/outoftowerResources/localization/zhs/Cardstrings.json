@@ -1,0 +1,11 @@
+{
+  "OutOfTower:WildScratch": {
+    "NAME": "荒野抓挠",
+    "DESCRIPTION": "给予 !M! 层易伤。 NL 造成 !D! 点伤害，重复 !MISC! 次。",
+    "UPGRADE_DESCRIPTION": "给予 !M! 层易伤。 NL 造成 !D! 点伤害，重复 5 次。"
+  },
+  "OutOfTower:WildAura": {
+    "NAME": "荒野气息",
+    "DESCRIPTION": "虚无 NL 当此牌被消耗时，消耗你手牌中的随机 1 张牌。"
+  }
+}

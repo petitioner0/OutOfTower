@@ -1,0 +1,68 @@
+{
+  "OutOfTower:WildWraith": {
+    "NAME": "荒野怨灵",
+    "MOVES": [
+      "怨击连斩",
+      "诅咒之风",
+      "恶念凝聚",
+      "怒号裂魂"
+    ],
+    "DIALOG": [
+    ]
+  },
+
+  "OutOfTower:SandstormWolf": {
+    "NAME": "风沙狼"
+  },
+
+  "OutOfTower:RockRhino": {
+    "NAME": "岩石犀牛"
+  },
+
+  "OutOfTower:DemonCorruptedWarrior": {
+    "NAME": "被恶魔侵蚀的战士"
+  },
+
+  "OutOfTower:WildRat": {
+    "NAME": "荒野鼠"
+  },
+
+  "OutOfTower:WildWalker": {
+    "NAME": "荒野行者",
+    "MOVES": [
+      "暗影步",
+      "三连击",
+      "格挡",
+      "刺骨"
+    ],
+    "DIALOG": []
+  },
+
+  "OutOfTower:WildWarElephant": {
+    "NAME": "荒野战象",
+    "MOVES": [
+      "战吼",
+      "威压",
+      "冲撞"
+    ],
+    "DIALOG": []
+  },
+
+  "OutOfTower:WildstormHound": {
+    "NAME": "狂岚猎犬",
+    "MOVES": [
+      "撕咬",
+      "扑袭",
+      "隐蔽",
+      "撕裂标记"
+    ]
+  },
+  "OutOfTower:WildHunter": {
+    "NAME": "荒野猎手",
+    "MOVES": [
+      "连击",
+      "破绽斩击",
+      "战术标记"
+    ]
+  }
+}

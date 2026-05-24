@@ -1,6 +1,3 @@
-<<<<<<< Updated upstream
-This is a Slya of Spire Mod
-=======
 This is an example character template for the more experienced Slay the Spire modder.
 It contains the basics of an empty character, as well as:
 - Improved X cost action framework (Alchyr)
@@ -21,4 +18,3 @@ Setup guide:
 7. Change the author field in `resources/ModTheSpire.json` to your own name.
 8. Rename the mod's code folder. (the folder named 'outoftower' to start). Right click and refactor its name to the name of your mod, all lowercase.
 9+. You'll probably want to rename your character in the `Charstrings.json` file to start off. From there, it's just making the mod of your dreams!
->>>>>>> Stashed changes
