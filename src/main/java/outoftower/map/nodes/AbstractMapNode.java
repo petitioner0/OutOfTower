@@ -19,9 +19,6 @@ public abstract class AbstractMapNode {
     // 子类声明的“坐标邻接”
     protected final List<int[]> neighborCoords = new ArrayList<>();
 
-    // 构建器最终填充的“类邻接”
-    public final Set<Class<? extends AbstractMapNode>> neighbors = new HashSet<>();
-
     protected AbstractMapNode(int gx, int gy) {
         this.gx = gx;
         this.gy = gy;
@@ -51,6 +48,11 @@ public abstract class AbstractMapNode {
         if (cachedRoom == null) {
             cachedRoom = createRoom();
         }
+    }
+
+    /** 新一局开始时丢弃上一局已经完成或已 dispose 的房间实例。 */
+    public final void resetRoom() {
+        cachedRoom = null;
     }
 
     /** 子类只负责“这个节点用什么 Room” */

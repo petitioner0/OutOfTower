@@ -1,6 +1,6 @@
 package outoftower.map.nodes.room.wild;
 
-import com.megacrit.cardcrawl.events.AbstractEvent;
+import outoftower.map.events.MyFirstEvent;
 import outoftower.map.nodes.icon.IconType;
 import outoftower.map.nodes.room.OutOfTowerEventRoom;
 
@@ -13,6 +13,6 @@ public class WildEventRoom extends OutOfTowerEventRoom {
 
     @Override
     protected String rollEventId() {
-        return "OutOfTower:MyFirstEvent";
+        return MyFirstEvent.ID;
     }
 }

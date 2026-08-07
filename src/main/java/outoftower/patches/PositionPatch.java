@@ -10,5 +10,6 @@ public class PositionPatch {
     @SpirePrefixPatch
     public static void prefix(DungeonMapScreen __instance){
         MapPositioner.recalc();
+        MapPositioner.beginRender();
     }
 }

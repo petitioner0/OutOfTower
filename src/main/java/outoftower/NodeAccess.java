@@ -18,15 +18,17 @@ public class NodeAccess {
         }
     }
 
-    public static float getAngle(MapRoomNode node) {
+    public static void setScale(MapRoomNode node, float scale) {
         try {
-            return ReflectionHacks.getPrivate(
+            ReflectionHacks.setPrivate(
                     node,
                     MapRoomNode.class,
-                    "angle"
+                    "scale",
+                    scale
             );
-        } catch (Exception e) {
-            return 0f;
+        } catch (Exception ignored) {
+            // 不应因为视觉缩放字段变更中断地图渲染。
         }
     }
+
 }

@@ -4,7 +4,10 @@ package outoftower.map.nodes.room;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.events.AbstractEvent;
+import com.megacrit.cardcrawl.events.AbstractImageEvent;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
+import com.megacrit.cardcrawl.potions.AbstractPotion;
+import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import outoftower.map.nodes.icon.IconType;
 import outoftower.util.EventFactory;
@@ -80,8 +83,37 @@ public abstract class OutOfTowerEventRoom extends AbstractRoom {
     public void render(SpriteBatch sb) {
         if (event != null) {
             event.render(sb);
+
+            // 本类不能继承 EventRoom，否则 AbstractDungeon.nextRoomTransition
+            // 会把预先安排好的事件替换成原版随机问号房。这里复刻 EventRoom
+            // 调用 AbstractRoom.render 时的分支，避免被当作普通房间绘制角色。
+            if (!(event instanceof AbstractImageEvent) || event.combatTime) {
+                event.renderRoomEventPanel(sb);
+                if (AbstractDungeon.screen != AbstractDungeon.CurrentScreen.VICTORY) {
+                    AbstractDungeon.player.render(sb);
+                }
+            }
         }
-        super.render(sb);
+
+        if (monsters != null && AbstractDungeon.screen != AbstractDungeon.CurrentScreen.DEATH) {
+            monsters.render(sb);
+        }
+
+        if (phase == RoomPhase.COMBAT) {
+            AbstractDungeon.player.renderPlayerBattleUi(sb);
+        }
+
+        for (AbstractPotion potion : potions) {
+            if (!potion.isObtained) {
+                potion.render(sb);
+            }
+        }
+
+        for (AbstractRelic relic : relics) {
+            relic.render(sb);
+        }
+
+        renderTips(sb);
     }
 
     @Override

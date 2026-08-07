@@ -1,7 +1,6 @@
 package outoftower.map;
 
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.map.Legend;
 import com.megacrit.cardcrawl.map.MapEdge;
 import com.megacrit.cardcrawl.map.MapRoomNode;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
@@ -22,6 +21,7 @@ public class StaticGraphMapBuilder {
 
         CustomMap.nodes.clear();
         CustomMap.nativeNodes.clear();
+        MapPositioner.invalidateEdgeLayout();
 
         // ⭐ 1. 先让所有节点生成房间 + 预先抽事件！
         for (AbstractMapNode n : NodeRegistry.getAllNodes()) {
@@ -51,32 +51,13 @@ public class StaticGraphMapBuilder {
             CustomMap.nativeNodes.put(n.id, rn);
         }
 
-        // ⭐ 3. 建立节点之间的连线
-        // MapEdge 构造函数需要显示坐标（x, y），用于在地图中查找节点
-        // 由于节点的 x/y 会在 MapPositioner.recalc() 中动态更新，
-        // 我们先用 gx/gy 初始化 x/y，建立连线后再由 MapPositioner 更新
+        // DungeonMapScreen.updateImage() 只会收集 hasEdges() 的节点。
+        // 四参数 MapEdge 不会生成 MapDot，因此只用作节点的无渲染占位边。
+        // 真正可见的可达路径由 MapPositioner 独立管理，避免触发
+        // MapRoomNode.update() 内置的可达动画和点击逻辑。
         for (AbstractMapNode n : NodeRegistry.getAllNodes()) {
             MapRoomNode rn = CustomMap.nativeNodes.get(n.id);
-            // 初始化显示坐标为逻辑坐标（后续会被 MapPositioner 更新）
-            rn.x = n.gx;
-            rn.y = n.gy;
-        }
-
-        // 建立连线：遍历所有节点，通过坐标查找邻居
-        for (AbstractMapNode src : NodeRegistry.getAllNodes()) {
-            MapRoomNode srcRN = CustomMap.nativeNodes.get(src.id);
-
-            // 通过坐标链接查找邻居节点
-            for (int[] coord : src.getCoordLinks()) {
-                String key = coord[0] + "," + coord[1];
-                AbstractMapNode dst = NodeRegistry.coordMap.get(key);
-                if (dst != null && CustomMap.nativeNodes.containsKey(dst.id)) {
-                    MapRoomNode dstRN = CustomMap.nativeNodes.get(dst.id);
-                    // ⭐ 使用当前的显示坐标建立连线
-                    // MapEdge 在渲染时会使用节点的实际位置（hb.cX/cY）
-                    srcRN.addEdge(new MapEdge(srcRN.x, srcRN.y, dstRN.x, dstRN.y));
-                }
-            }
+            rn.addEdge(new MapEdge(rn.x, rn.y, rn.x, rn.y));
         }
 
         // ⭐ 4. 构建 AbstractDungeon.map 的二维结构

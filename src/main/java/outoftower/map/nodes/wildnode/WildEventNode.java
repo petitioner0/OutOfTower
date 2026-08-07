@@ -20,7 +20,7 @@ public class WildEventNode extends AbstractMapNode {
 
     @Override
     protected AbstractRoom createRoom() {
-        // ⭐ 房间由这个方法提供
+        // 房间由这个方法提供
         return new WildEventRoom();
     }
 }

@@ -1,28 +1,27 @@
 package outoftower.map.events;
 
-import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.events.AbstractImageEvent;
-import com.megacrit.cardcrawl.localization.EventStrings;
+
+import static outoftower.OutOfTower.makeID;
+import static outoftower.OutOfTower.makeImagePath;
 
 public class MyFirstEvent extends AbstractImageEvent {
 
-    public static final String ID = "OutOfTower:MyFirstEvent";
-    private static final EventStrings eventStrings =
-            CardCrawlGame.languagePack.getEventString(ID);
+    public static final String ID = makeID("MyFirstEvent");
 
-    public static final String NAME = eventStrings.NAME;
-    public static final String[] DESCRIPTIONS = eventStrings.DESCRIPTIONS;
-    public static final String[] OPTIONS = eventStrings.OPTIONS;
+    private static final String NAME = "My First Event";
+    private static final String DESCRIPTION = "This is my very first event.";
+    private static final String LEAVE_OPTION = "Leave";
 
     public MyFirstEvent() {
         super(
                 NAME,
-                DESCRIPTIONS[0],
-                "outoftowerResources/images/events/test_event.png"
+                DESCRIPTION,
+                makeImagePath("events/test_event.png")
         );
 
         // 只有一个按钮
-        imageEventText.setDialogOption(OPTIONS[0]);
+        imageEventText.setDialogOption(LEAVE_OPTION);
     }
 
     @Override

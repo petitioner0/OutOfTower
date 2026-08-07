@@ -14,7 +14,21 @@ public class CustomMap {
     public static final Map<UUID, MapRoomNode> nativeNodes = new HashMap<>();
 
     public static UUID playerNode = null;
-    public static boolean shouldEnterStartNode;
+
+    /** 清理所有只属于当前一局游戏的静态状态。 */
+    public static void resetRunState() {
+        playerNode = null;
+        nodes.clear();
+        nativeNodes.clear();
+        PlayerPathTracker.clear();
+        // AbstractDungeon.nextRoom 是静态字段，放弃游戏后可能仍指向上一局的
+        // 自定义房间。新局第一次自动存档会优先读取它，因此必须显式清空。
+        AbstractDungeon.nextRoom = null;
+
+        for (AbstractMapNode node : NodeRegistry.getAllNodes()) {
+            node.resetRoom();
+        }
+    }
 
     public static void init() {
 
@@ -44,9 +58,6 @@ public class CustomMap {
         );
 
         playerNode = start.id;
-        
-        // 记录起始节点
-        PlayerPathTracker.recordVisit(playerNode);
 
         // 初次定位
         MapPositioner.recalc();
@@ -60,13 +71,26 @@ public class CustomMap {
             return false;
         }
         
-        // 检查 node1 的邻居中是否包含 node2 的类
-        return node1.neighbors.contains(node2.getClass());
+        // 节点类型只能表示允许连接的类别，不能表示两个具体节点是否相邻。
+        // 当前地图中的节点都是同一类型，按类型判断会令非邻接节点也可达。
+        for (int[] coord : node1.getCoordLinks()) {
+            if (coord != null && coord.length >= 2
+                    && coord[0] == node2.gx && coord[1] == node2.gy) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static boolean canReachFromPlayer(UUID targetId) {
         if (playerNode == null) {
             return false;
+        }
+
+        // 新局开始时 playerNode 只表示地图的初始定位点，玩家还没有真正进入它。
+        // 第一次选择必须进入该节点本身；记录访问后才允许选择相邻节点。
+        if (!PlayerPathTracker.hasVisited(playerNode)) {
+            return playerNode.equals(targetId);
         }
         return isConnected(playerNode, targetId);
     }
