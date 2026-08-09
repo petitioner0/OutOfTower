@@ -8,6 +8,7 @@ import outoftower.api.OutOfTowerApi;
 public final class FirstEvent extends AbstractEvent {
     public FirstEvent() {
         body = "A hidden path appears between the start and north nodes.";
+        hasDialog = true;
         roomEventText.addDialogOption("Open the shortcut");
     }
 

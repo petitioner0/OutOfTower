@@ -7,6 +7,7 @@ import outoftower.api.OutOfTowerApi;
 public final class SecondEvent extends AbstractEvent {
     public SecondEvent() {
         body = "The eastern road collapses behind you.";
+        hasDialog = true;
         roomEventText.addDialogOption("Continue");
     }
 

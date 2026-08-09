@@ -45,11 +45,6 @@ public final class OutOfTowerEventRoom extends AbstractRoom {
         if (event == null) {
             event = ContentRegistry.createEvent(plannedEventId);
             event.onEnterRoom();
-            // AbstractEvent starts with hasDialog=false. Its update() method
-            // only opens RoomEventDialog and displays body when this flag is
-            // enabled by the containing room.
-            event.hasDialog = true;
-            event.waitTimer = 0.1F;
         }
     }
 
@@ -57,6 +52,11 @@ public final class OutOfTowerEventRoom extends AbstractRoom {
     public void update() {
         super.update();
         if (!AbstractDungeon.isScreenUp && event != null) event.update();
+        if (event != null && event.waitTimer == 0.0F
+                && !event.hasFocus && phase != RoomPhase.COMBAT) {
+            phase = RoomPhase.COMPLETE;
+            event.reopen();
+        }
     }
 
     @Override
