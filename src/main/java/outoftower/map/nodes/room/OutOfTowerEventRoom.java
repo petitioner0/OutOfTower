@@ -45,6 +45,10 @@ public final class OutOfTowerEventRoom extends AbstractRoom {
         if (event == null) {
             event = ContentRegistry.createEvent(plannedEventId);
             event.onEnterRoom();
+            // AbstractEvent starts with hasDialog=false. Its update() method
+            // only opens RoomEventDialog and displays body when this flag is
+            // enabled by the containing room.
+            event.hasDialog = true;
             event.waitTimer = 0.1F;
         }
     }

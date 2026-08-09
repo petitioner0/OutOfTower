@@ -94,7 +94,13 @@ public final class MapManager {
     /** BaseMod restores CustomSavable fields after the vanilla load transition. */
     private static void restoreLoadedRoom() {
         if (!CardCrawlGame.loadingSave || session == null) return;
-        MapRoomNode currentNode = session.getNativeNodes().get(session.getCurrentNodeId());
+        String currentNodeId = session.getCurrentNodeId();
+        // A newly-created session already has a selected start node, but that
+        // node is not the player's room until it has actually been visited.
+        // Preserve Neow when loading a floor-zero save.
+        if (currentNodeId == null || !session.hasVisited(currentNodeId)) return;
+
+        MapRoomNode currentNode = session.getNativeNodes().get(currentNodeId);
         if (currentNode == null || currentNode.room == null) return;
 
         AbstractRoom previousRoom = AbstractDungeon.currMapNode == null
@@ -104,7 +110,10 @@ public final class MapManager {
         AbstractDungeon.currMapNode = currentNode;
         AbstractDungeon.nextRoom = currentNode;
         AbstractDungeon.actionManager.clear();
-        currentNode.room.phase = AbstractRoom.RoomPhase.INCOMPLETE;
+        // AbstractRoom only drives event dialogs while the room is in EVENT.
+        // INCOMPLETE leaves a restored AbstractEvent invisible and prevents the
+        // player from completing the room or selecting another map node.
+        currentNode.room.phase = AbstractRoom.RoomPhase.EVENT;
         currentNode.room.onPlayerEntry();
         AbstractDungeon.scene.nextRoom(currentNode.room);
         AbstractDungeon.rs = currentNode.room.event instanceof AbstractImageEvent

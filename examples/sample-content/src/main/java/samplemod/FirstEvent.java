@@ -7,7 +7,7 @@ import outoftower.api.OutOfTowerApi;
 /** Demonstrates opening a shortcut and storing persistent quest state. */
 public final class FirstEvent extends AbstractEvent {
     public FirstEvent() {
-        roomEventText.updateBodyText("A hidden path appears between the start and north nodes.");
+        body = "A hidden path appears between the start and north nodes.";
         roomEventText.addDialogOption("Open the shortcut");
     }
 

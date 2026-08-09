@@ -6,7 +6,7 @@ import outoftower.api.OutOfTowerApi;
 /** Demonstrates removing a base edge. */
 public final class SecondEvent extends AbstractEvent {
     public SecondEvent() {
-        roomEventText.updateBodyText("The eastern road collapses behind you.");
+        body = "The eastern road collapses behind you.";
         roomEventText.addDialogOption("Continue");
     }
 
