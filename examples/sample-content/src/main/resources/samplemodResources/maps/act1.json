@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "mapId": "samplemod:act1",
+  "mapVersion": 1,
+  "size": {
+    "width": 4,
+    "height": 4
+  },
+  "viewport": {
+    "radius": 2
+  },
+  "eventPools": {
+    "wild": {
+      "drawMode": "WITH_REPLACEMENT",
+      "events": [
+        {
+          "eventId": "samplemod:first",
+          "weight": 3
+        },
+        {
+          "eventId": "samplemod:second",
+          "weight": 1
+        }
+      ]
+    }
+  },
+  "nodes": [
+    {
+      "id": "start",
+      "x": 1,
+      "y": 1,
+      "type": "wild",
+      "start": true,
+      "eventPool": "wild",
+      "links": [
+        "east",
+        "north"
+      ]
+    },
+    {
+      "id": "east",
+      "x": 2,
+      "y": 1,
+      "type": "wild",
+      "start": false,
+      "eventPool": "wild",
+      "links": [
+        "north"
+      ]
+    },
+    {
+      "id": "north",
+      "x": 1,
+      "y": 2,
+      "type": "story",
+      "start": false,
+      "eventPool": "wild",
+      "links": []
+    }
+  ]
+}

@@ -1,118 +1,95 @@
 package outoftower.map;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.map.MapEdge;
 import com.megacrit.cardcrawl.map.MapRoomNode;
 import outoftower.NodeAccess;
-import outoftower.map.nodes.AbstractMapNode;
-import outoftower.util.NodeRegistry;
+import outoftower.map.definition.EdgeKey;
+import outoftower.map.definition.NodeDefinition;
+import outoftower.map.runtime.MapManager;
+import outoftower.map.runtime.MapSession;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
-public class MapPositioner {
-
-    public static final int CENTER_COL = 2;
-    public static final int CENTER_ROW = 7;
+public final class MapPositioner {
+    private static final int CENTER_COL = 3;
+    private static final int CENTER_ROW = 7;
+    private static final int HIDDEN_COORDINATE = -9999;
 
     private static final List<MapEdge> visualEdges = new ArrayList<>();
-    private static UUID edgeLayoutCenter;
-    private static boolean edgeLayoutPlayerVisited;
+    private static String edgeLayoutCenter;
+    private static long edgeLayoutRevision = Long.MIN_VALUE;
     private static boolean visualEdgesRendered;
 
-    /** 新的 MapRoomNode 实例建立后，强制下次定位重建连线。 */
+    private MapPositioner() {
+    }
+
     public static void invalidateEdgeLayout() {
         visualEdges.clear();
         edgeLayoutCenter = null;
-        edgeLayoutPlayerVisited = false;
+        edgeLayoutRevision = Long.MIN_VALUE;
         visualEdgesRendered = false;
     }
 
     public static void recalc() {
-        if (CustomMap.playerNode == null) return;
-
-        AbstractMapNode player = CustomMap.nodes.get(CustomMap.playerNode);
+        MapSession session = MapManager.getSession();
+        if (session == null || session.getCurrentNodeId() == null) return;
+        NodeDefinition player = session.getDefinition().getNodesById().get(session.getCurrentNodeId());
         if (player == null) return;
 
-        for (AbstractMapNode n : CustomMap.nodes.values()) {
-            MapRoomNode rn = CustomMap.nativeNodes.get(n.id);
-            if (rn == null) continue;
+        for (NodeDefinition node : session.getDefinition().getNodes()) {
+            MapRoomNode nativeNode = session.getNativeNodes().get(node.getId());
+            if (nativeNode == null) continue;
 
-            int dx = n.gx - player.gx;
-            int dy = n.gy - player.gy;
-            int dist = Math.abs(dx) + Math.abs(dy);
-
-            // 完全隐藏 > 2 格
-            if (dist > 2) {
-                rn.x = -9999;
-                rn.y = -9999;
-                rn.color.a = 0f; // 纯视觉，非必须
+            int dx = node.getX() - player.getX();
+            int dy = node.getY() - player.getY();
+            int distance = Math.abs(dx) + Math.abs(dy);
+            if (distance > session.getDefinition().getViewportRadius()) {
+                nativeNode.x = HIDDEN_COORDINATE;
+                nativeNode.y = HIDDEN_COORDINATE;
+                nativeNode.color.a = 0f;
                 continue;
             }
 
-            // ⭐ 只设置“格子坐标”
-            rn.x = CENTER_COL + dx;
-            rn.y = CENTER_ROW + dy;
+            nativeNode.x = CENTER_COL + dx;
+            nativeNode.y = CENTER_ROW + dy;
+            nativeNode.taken = session.hasVisited(node.getId());
+            boolean reachable = session.canReach(node.getId());
+            boolean current = node.getId().equals(session.getCurrentNodeId());
+            if (reachable || current) nativeNode.color.set(MapRoomNode.AVAILABLE_COLOR);
+            else nativeNode.color.set(1f, 1f, 1f, 0.25f);
 
-            rn.taken = PlayerPathTracker.hasVisited(n.id);
-
-            boolean reachable = CustomMap.canReachFromPlayer(n.id);
-            boolean current = n.id.equals(CustomMap.playerNode);
-
-            // recalc() 会在每帧渲染前调用，直接复用现有 Color
-            // 对象，避免为每个可视节点持续分配短命对象。
-            if (reachable || current) {
-                rn.color.set(MapRoomNode.AVAILABLE_COLOR);
-            } else {
-                rn.color.set(1f, 1f, 1f, 0.25f);
-            }
-
-            // 原版本身已能处理悬停放大和离开缩小；只需阻止它把
-            // “悬停但不可达”的节点放大。这样平常每帧不会执行反射写入。
-            if (!reachable && rn.hb.hovered) {
-                NodeAccess.setScale(rn, 0.5f);
-            }
+            if (!reachable && nativeNode.hb.hovered) NodeAccess.setScale(nativeNode, 0.5f);
         }
 
-        boolean playerVisited = PlayerPathTracker.hasVisited(player.id);
-        if (!player.id.equals(edgeLayoutCenter)
-                || playerVisited != edgeLayoutPlayerVisited) {
-            rebuildVisualEdges(player);
-            edgeLayoutCenter = player.id;
-            edgeLayoutPlayerVisited = playerVisited;
+        if (!session.getCurrentNodeId().equals(edgeLayoutCenter)
+                || edgeLayoutRevision != session.getVisualRevision()) {
+            rebuildVisualEdges(session);
+            edgeLayoutCenter = session.getCurrentNodeId();
+            edgeLayoutRevision = session.getVisualRevision();
         }
     }
 
-    private static void rebuildVisualEdges(AbstractMapNode playerNode) {
+    private static void rebuildVisualEdges(MapSession session) {
         visualEdges.clear();
-
-        // 占位边始终只指向节点自身，既保持 hasEdges() 为 true，
-        // 又不会让原版把邻居判定为可达节点并启动呼吸缩放。
-        for (MapRoomNode node : CustomMap.nativeNodes.values()) {
+        for (MapRoomNode node : session.getNativeNodes().values()) {
             node.getEdges().clear();
+            // DungeonMapScreen only includes nodes with at least one native edge.
             node.addEdge(new MapEdge(node.x, node.y, node.x, node.y));
         }
 
-        MapRoomNode playerRN = CustomMap.nativeNodes.get(playerNode.id);
-        if (!isVisible(playerRN)) return;
-
-        for (int[] coord : playerNode.getCoordLinks()) {
-            if (coord == null || coord.length < 2) continue;
-
-            AbstractMapNode dst = NodeRegistry.coordMap.get(coord[0] + "," + coord[1]);
-            if (dst == null || !CustomMap.canReachFromPlayer(dst.id)) continue;
-
-            MapRoomNode dstRN = CustomMap.nativeNodes.get(dst.id);
-            if (!isVisible(dstRN)) continue;
-
+        for (EdgeKey edgeKey : session.getEffectiveEdges()) {
+            MapRoomNode first = session.getNativeNodes().get(edgeKey.getFirst());
+            MapRoomNode second = session.getNativeNodes().get(edgeKey.getSecond());
+            if (!isVisible(first) || !isVisible(second)) continue;
             MapEdge edge = new MapEdge(
-                    playerRN.x, playerRN.y, playerRN.offsetX, playerRN.offsetY,
-                    dstRN.x, dstRN.y, dstRN.offsetX, dstRN.offsetY,
-                    false
-            );
-            edge.color = MapRoomNode.AVAILABLE_COLOR;
+                    first.x, first.y, first.offsetX, first.offsetY,
+                    second.x, second.y, second.offsetX, second.offsetY,
+                    false);
+            if (edgeKey.contains(session.getCurrentNodeId())) {
+                edge.color = MapRoomNode.AVAILABLE_COLOR;
+            }
             visualEdges.add(edge);
         }
     }
@@ -121,17 +98,13 @@ public class MapPositioner {
         visualEdgesRendered = false;
     }
 
-    /** 由本帧第一个 MapRoomNode 在自身渲染前调用。 */
     public static void renderEdgesOnce(SpriteBatch sb) {
-        if (visualEdgesRendered) return;
-
+        if (visualEdgesRendered || MapManager.getSession() == null) return;
         visualEdgesRendered = true;
-        for (MapEdge edge : visualEdges) {
-            edge.render(sb);
-        }
+        for (MapEdge edge : visualEdges) edge.render(sb);
     }
 
     private static boolean isVisible(MapRoomNode node) {
-        return node != null && node.x != -9999 && node.y != -9999;
+        return node != null && node.x != HIDDEN_COORDINATE && node.y != HIDDEN_COORDINATE;
     }
 }

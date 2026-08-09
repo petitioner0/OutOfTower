@@ -1,0 +1,10 @@
+{
+  "modid": "sampleoutoftowercontent",
+  "name": "Sample OutOfTower Content",
+  "author_list": ["OutOfTower example"],
+  "description": "A minimal data-driven OutOfTower content mod.",
+  "version": "0.1.0",
+  "sts_version": "12-22-2020",
+  "mts_version": "3.18.2",
+  "dependencies": ["basemod", "outoftower"]
+}

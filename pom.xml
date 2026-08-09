@@ -6,7 +6,7 @@
     <artifactId>OutOfTower</artifactId>
     <version>0.0.1</version>
     <name>OutOfTower</name>
-    <description>A Slay the Spire mod with a custom map outside the Tower.</description>
+    <description>A data-driven custom map framework for Slay the Spire mods.</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -47,6 +47,12 @@
             <version>5.29.0</version>
             <scope>system</scope>
             <systemPath>${Steam.path}/workshop/content/646570/1605833019/BaseMod.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
